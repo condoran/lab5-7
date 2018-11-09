@@ -8,9 +8,15 @@ class moviesRepository:
     def addM(self, movie):
         self.movies.append(movie)
 
+    def findID(self, ID):
+        for i in range(0, len(self.movies)):
+            if self.movies[i].getID() == ID:
+                return False
+        return True
+
     def find(self, movie):
         for i in range(0, len(self.movies)):
-            if self.movies == movie:
+            if self.movies[i] == movie:
                 return i
         return -1
 
