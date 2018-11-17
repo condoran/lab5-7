@@ -1,33 +1,25 @@
 class Movie:
     def __init__(self, movieID, title, desc, genre):
         self.movieID = movieID
-        self.title = title
-        self.desc = desc
-        self.genre = genre
+        self.movieTitle = title
+        self.movieDesc = desc
+        self.movieGenre = genre
 
-    def getID(self):
+    @property
+    def ID(self):
         return self.movieID
 
-    def getTitle(self):
-        return self.title
+    @property
+    def title(self):
+        return self.movieTitle
 
-    def getDesc(self):
-        return self.title
+    @property
+    def desc(self):
+        return self.movieDesc
 
-    def getGenre(self):
+    @property
+    def genre(self):
         return self.genre
-
-    def setID(self, v):
-        self.movieID = v
-
-    def setTitle(self, v):
-        self.title = v
-
-    def setDesc(self, v):
-        self.desc = v
-
-    def setGenre(self, v):
-        self.desc = v
 
     def print(self):
         print(self.movieID, self.title, self.desc, self.genre)
@@ -37,17 +29,13 @@ class Client:
         self.clientID = clientID
         self.name = name
 
-    def getID(self):
+    @property
+    def ID(self):
         return self.clientID
 
-    def getName(self):
+    @property
+    def name(self):
         return self.name
-
-    def setID(self, v):
-        self.clientID = v
-
-    def setName(self, v):
-        self.name = v
 
     def print(self):
         print(self.clientID, self.name)

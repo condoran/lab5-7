@@ -30,7 +30,7 @@ class UI:
                     title = input("Enter the title: ")
                     desc = input("Enter the description: ")
                     genre = input("Enter the genre: ")
-                    if self._controller.testMovieID(ID):
+                    if not self._controller.testMovieID(ID):
                         self._controller.addMovie(ID, title, desc, genre)
                     else:
                         print("The ID is already in use")

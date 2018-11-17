@@ -1,5 +1,6 @@
 from repository.moviesRepo import *
 from repository.clientRepo import *
+from domain.stuff import *
 
 class Controler:
     def __init__(self, movies, clients, rentals):
@@ -8,10 +9,7 @@ class Controler:
         self.rentals = rentals
 
     def testMovieID(self, ID):
-        for i in range(0, len(self.movieRepo)):
-            if self.movieRepo.movies[i].getID() == ID:
-                return False
-        return True
+        return self.movieRepo.findID(ID)
 
     def testClientID(self, ID):
         for i in range(0, len(self.clients)):
@@ -26,4 +24,4 @@ class Controler:
         self.clients.addC(Client(ID, name))
 
     def printM(self):
-        return self.movieRepo.getAll()
+        return str(self.movieRepo)
