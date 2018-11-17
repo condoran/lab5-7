@@ -1,3 +1,5 @@
+from domain.stuff import Movie
+
 class moviesRepository:
 
     def __init__(self):
@@ -7,16 +9,16 @@ class moviesRepository:
         self.movies.append(movie)
 
     def findID(self, ID):
-        for i in self.movies:
-            if self.movies[i].ID == ID:
-                return True
-        return False
+        for i in range(0, len(self.movies)):
+            if self.movies[i].getID() == ID:
+                return False
+        return True
 
     def find(self, movie):
-        for i in self.movies:
+        for i in range(0, len(self.movies)):
             if self.movies[i] == movie:
                 return i
-        return False
+        return -1
 
     def remove(self, movie):
         if self.find(movie) != -1:
@@ -25,30 +27,15 @@ class moviesRepository:
             raise RepositoryException("We do not have the movie at the shop!")
 
     def update(self, movie, movieN):
-        if self.find(movie) != -1:
-            self.remove(movie)
-            self.addM(movieN)
-        else:
-            raise RepositoryException("We do not have the movie at the shop!")
+        self.movies[self.find(movie)] = movieN
 
     def getAll(self):
         return self.movies
 
-    def __len__(self):
-        return len(self.movies)
-
-    def __str__(self):
-        final = ""
-        for r in self.movies:
-            final += str(r)
-            final += "/n"
-        return final
-
-class RepositoryException(Exception):
+class RepositoryException:
 
     def __init__(self, message):
         self.__message = message
 
-    @property
-    def message(self):
+    def __str__(self):
         return  self.__message
