@@ -16,17 +16,19 @@ class moviesRepository:
                 return True
         return False
 
+    '''
     def find(self, movie):
         for i in range(0, len(self.movies)):
             if self.movies[i] == movie:
                 return i
         return False
+    '''
 
     def remove(self, movie):
         if self.find(movie) != False:
             del self.movies[self.find(movie)]
         else:
-            raise RepositoryException("We do not have the movie at the shop!")
+            raise ValueError("We do not have the movie at the shop!")
 
     def update(self, movie, movieN):
         self.movies[self.find(movie)] = movieN
@@ -37,5 +39,5 @@ class moviesRepository:
             r += str(i)
         return r
 
-    def getAllM(self):
+    def getAll(self):
         return self.movies

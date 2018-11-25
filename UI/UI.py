@@ -30,6 +30,10 @@ class UI:
                     title = input("Enter the title: ")
                     desc = input("Enter the description: ")
                     genre = input("Enter the genre: ")
+                    try:
+                        ID = int(ID)
+                    except ValueError:
+                        print("Invalid ID!")
                     if not self._controller.testMovieID(ID):
                         self._controller.addMovie(ID, title, desc, genre)
                     else:
@@ -37,6 +41,10 @@ class UI:
                 elif a == "2":
                     ID = input("Enter the ID: ")
                     name = input("Enter the name: ")
+                    try:
+                        ID = int(ID)
+                    except ValueError:
+                        print("Invalid ID!")
                     if not self._controller.testClientID(ID):
                         self._controller.addClient(ID, name)
                     else:
@@ -50,19 +58,25 @@ class UI:
                 if a == "1":
                     print(self._controller.printM())
                     ID = input("Enter the ID: ")
-                    title = input("Enter the title: ")
-                    desc = input("Enter the description: ")
-                    genre = input("Enter the genre: ")
                     try:
                         ID = int(ID)
                     except ValueError:
                         print("Invalid ID!")
-                    self._controller.deleteMovie(Movie(ID, title, desc, genre))
+                    if self._controller.testMovieID(ID):
+                        self._controller.deleteMovie(ID)
+                    else:
+                        print("There is no movie with this ID!")
                 elif a == "2":
                     print(self._controller.printC())
                     ID = input("Enter the ID: ")
-                    name = input("Enter the name: ")
-                    self._controller.deleteClient(Client(ID, name))
+                    try:
+                        ID = int(ID)
+                    except ValueError:
+                        print("Invalid ID!")
+                    if self._controller.testClientID(ID):
+                        self._controller.deleteClient(Client(ID, name))
+                    else:
+                        print("There is no client with this ID!")
                 else:
                     print("Invalid input!")
             elif userInput == "3":
@@ -71,32 +85,34 @@ class UI:
                 a = input("What do you want to update? ")
                 if a == "1":
                     ID = input("Enter the ID: ")
-                    title = input("Enter the title: ")
-                    desc = input("Enter the description: ")
-                    genre = input("Enter the genre: ")
-                    pos = self._controller.testMovieExists(ID, title, desc, genre)
-                    if pos == False:
-                        print("There is no such movie!")
+                    try:
+                        ID = int(ID)
+                    except ValueError:
+                        print("Invalid ID!")
+                    if not self._controller.testMovieID(ID):
+                        print("There is no movie with this ID!")
                     else:
                         IDN = input("Enter the new ID: ")
                         titleN = input("Enter the new title: ")
                         descN = input("Enter the new description: ")
                         genreN = input("Enter the new genre: ")
-                        if self._controller.testMovieID(IDN):
-                            self._controller.updateMovie(Movie(IDN, titleN, descN, genreN), pos)
+                        if not self._controller.testMovieID(IDN):
+                            self._controller.updateMovie(Movie(IDN, titleN, descN, genreN), ID)
                         else:
                             print("The ID is already in use")
                 elif a == "2":
                     ID = input("Enter the ID: ")
-                    name = input("Enter the name: ")
-                    pos = self._controller.testClientExists(ID, name)
-                    if pos == False:
+                    try:
+                        ID = int(ID)
+                    except ValueError:
+                        print("Invalid ID!")
+                    if not self._controller.testClientID(ID):
                         print("There is no such movie!")
                     else:
                         IDN = input("Enter the new ID: ")
                         nameN = input("Enter the new name: ")
-                        if self._controller.testMovieID(IDN):
-                            self._controller.updateClient(Client(IDN, nameN), pos)
+                        if not self._controller.testClientID(IDN):
+                            self._controller.updateClient(Client(IDN, nameN), ID)
                         else:
                             print("The ID is already in use!")
                 else:
