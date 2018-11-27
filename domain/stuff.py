@@ -21,6 +21,18 @@ class Movie:
     def genre(self):
         return self.movieGenre
 
+    def setID(self, ID):
+        self.movieID = ID
+
+    def setTitle(self, title):
+        self.movieTitle = title
+
+    def setDesc(self, desc):
+        self.movieDesc = desc
+
+    def setGenre(self, genre):
+        self.movieGenre = genre
+
     def __str__(self):
         return str(self.movieID) + ". " + self.title + "; " + self.desc + "; " + self.genre + '\n'
 
@@ -36,6 +48,12 @@ class Client:
     @property
     def name(self):
         return self.clientName
+
+    def setID(self, ID):
+        self.clientID = ID
+
+    def setName(self, name):
+        self.clientName = name
 
     def __str__(self):
         return str(self.clientID) + ". " + self.clientName + '\n'
@@ -75,3 +93,6 @@ class Rental:
 
     def setReturned(self, date):
         self.returnedDate = date
+
+    def __str__(self):
+        return str(self.rentalID) + ". " + str(self.movieID) + "; " + str(self.clientID)+ "; " + str(self.rentedDate) + "; " + str(self.dueDate) + "; " + str(self.rentedDate) + '\n'

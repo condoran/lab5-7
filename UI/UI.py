@@ -12,11 +12,11 @@ class UI:
         print("4.List")
         print("5.Rent a movie")
         print("6.Return a movie")
-        print("7.Exit")
+        print("7.Search for an element")
+        print("8.Statistics")
+        print("9.Exit")
 
     def menu(self):
-        now = datetime.datetime.today().strftime('%Y-%m-%d')
-
         while True:
             self.printMenu()
             userInput = input("Enter a command: ")
@@ -84,6 +84,7 @@ class UI:
                 print("2.Client")
                 a = input("What do you want to update? ")
                 if a == "1":
+                    print(self._controller.printM())
                     ID = input("Enter the ID: ")
                     try:
                         ID = int(ID)
@@ -101,13 +102,14 @@ class UI:
                         else:
                             print("The ID is already in use")
                 elif a == "2":
+                    print(self._controller.printC())
                     ID = input("Enter the ID: ")
                     try:
                         ID = int(ID)
                     except ValueError:
                         print("Invalid ID!")
                     if not self._controller.testClientID(ID):
-                        print("There is no such movie!")
+                        print("There is no such client!")
                     else:
                         IDN = input("Enter the new ID: ")
                         nameN = input("Enter the new name: ")
@@ -132,12 +134,129 @@ class UI:
                 mID = input("Type the ID of the movie you want to rent: ")
                 print(self._controller.printC())
                 cID = input("Type the ID of the client that is renting the movie: ")
-                self._controller.rentMovie(mID, cID, now)
+                try:
+                    cID = int(cID)
+                    mID = int(mID)
+                except ValueError:
+                    print("Invalid ID!")
+                if not self._controller.testClientID(cID):
+                    print("There is no such client!")
+                elif  not self._controller.testMovieID(mID):
+                    print("There is no such movie!")
+                else:
+                    try:
+                        self._controller.rentMovie(mID, cID)
+                    except ControllerException or RepositoryException as ce:
+                        print(ce)
             elif userInput == "6":
                 print(self._controller.printM())
                 mID = input("Type the ID of the movie you want to return: ")
-                self._controller.returnMovie(mID, now)
+                try:
+                    mID = int(mID)
+                except ValueError:
+                    print("Invalid ID!")
+                if not self._controller.testMovieID(mID):
+                    print("There is no such movie!")
+                else:
+                    try:
+                        self._controller.returnMovie(mID)
+                    except ControllerException as ce:
+                        print(ce)
             elif userInput == "7":
+                print("1.Movie")
+                print("2.Client")
+                a = input("What do you want to search for? ")
+                if a == "1":
+                    print("1.ID")
+                    print("2.Title")
+                    print("3.Description")
+                    print("4.Genre")
+                    kms = input("What do you want to search by? ")
+                    if kms == "1":
+                        ID = input("Enter the ID: ")
+                        try:
+                            moviesN = self._controller.findInMoviesID(ID)
+                        except ValueError as ve:
+                            print(ve)
+                        r = ""
+                        for i in moviesN:
+                            r += str(i)
+                        print(r)
+                    elif kms == "2":
+                        title = input("Enter the title: ")
+                        moviesN = self._controller.findInMoviesTitle(title)
+                        r = ""
+                        for i in moviesN:
+                            r += str(i)
+                        print(r)
+                    elif kms == "3":
+                        desc = input("Enter the descritpion: ")
+                        moviesN = self._controller.findInMoviesDesc(desc)
+                        r = ""
+                        for i in moviesN:
+                            r += str(i)
+                        print(r)
+                    elif kms == "4":
+                        genre = input("Enter the genre: ")
+                        moviesN = self._controller.findInMoviesGenre(genre)
+                        r = ""
+                        for i in moviesN:
+                            r += str(i)
+                        print(r)
+                    else:
+                        print("Invalid input!")
+                elif a == "2":
+                    print("1.ID")
+                    print("2.Name")
+                    kms = input("What do you want to search by? ")
+                    if kms == "1":
+                        ID = input("Enter the ID: ")
+                        try:
+                            clientsN = self._controller.findInClientsID(ID)
+                        except ValueError as ve:
+                            print(ve)
+                        r = ""
+                        for i in clientsN:
+                            r += str(i)
+                        print(r)
+                    elif kms == "2":
+                        name = input("Enter the genre: ")
+                        clientsN = self._controller.findInClientsName(name)
+                        r = ""
+                        for i in clientsN:
+                            r += str(i)
+                        print(r)
+                    else:
+                        print("Invalid input!")
+                else:
+                    print("Invalid input!")
+            elif userInput == "8":
+                print("1.Most rented movies")
+                print("2.Most active clients")
+                print("3.All rentals")
+                print("4.Late rentals")
+                a = input("What statistics do you want? ")
+                if a == "1":
+                    moviesN = self._controller.mostRentedMovie()
+                    for i in moviesN:
+                        print(str(i[2]))
+                elif a == "2":
+                    clientsN = self._controller.mostActiveClient()
+                    for i in clientsN:
+                        print(str(i[1]))
+                elif a == "3":
+                    moviesN = self._controller.allRentals()
+                    r = ""
+                    for i in moviesN:
+                        r += str(i)
+                    print(r)
+                elif a == "4":
+                    moviesN = self._controller.lateRentals()
+                    r = ""
+                    for i in moviesN:
+                        r += str(i)
+                    print(r)
+            elif userInput == "9":
                 return False
             else:
                 print("Invalid input")

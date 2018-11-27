@@ -9,7 +9,8 @@ class rentalRepository:
     def findMID(self, ID):
         for i in self.rentals:
             if i.mID == ID:
-                return True
+                if i.returnedD == 0:
+                    return True
         return False
 
     def findCID(self, ID):
@@ -34,3 +35,11 @@ class rentalRepository:
                     i.setReturned(now)
                 else:
                     raise RepositoryException("The movie was already returned!")
+
+    def returnByMovie(self, mID):
+        for i in self.rentals:
+            if i.mID == mID:
+                return i
+
+    def getAll(self):
+        return self.rentals
