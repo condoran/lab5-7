@@ -14,7 +14,9 @@ class UI:
         print("6.Return a movie")
         print("7.Search for an element")
         print("8.Statistics")
-        print("9.Exit")
+        print("9.Undo")
+        print("10.Redo")
+        print("11.Exit")
 
     def menu(self):
         while True:
@@ -239,11 +241,11 @@ class UI:
                 if a == "1":
                     moviesN = self._controller.mostRentedMovie()
                     for i in moviesN:
-                        print(str(i[2]))
+                        print(str(i[2]), "-times rented: ", i[0], ", days rented: ", i[1])
                 elif a == "2":
                     clientsN = self._controller.mostActiveClient()
                     for i in clientsN:
-                        print(str(i[1]))
+                        print(str(i[1]), "-days rented: ", i[0])
                 elif a == "3":
                     moviesN = self._controller.allRentals()
                     r = ""
