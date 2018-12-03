@@ -36,6 +36,9 @@ class FunctionCall:
     def call(self):
         self._fc(*self._params)
 
+    def __str__(self):
+        str(self._fc) + str(self._params[0]) + str(self._params[1]) + str(self._params[2]) + str(self._params[3])
+
 class CascadeOp:
     def __init__(self):
         self._oper = []

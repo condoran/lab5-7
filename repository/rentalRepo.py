@@ -22,6 +22,12 @@ class rentalRepository:
     def addRent(self, rental):
         self.rentals.append(rental)
 
+    def deleteRent(self, ID):
+        for i in range(0, len(self.rentals)):
+            if self.rentals[i].ID == ID:
+                del self.rentals[i]
+                break
+
     def newRentID(self):
         if len(self.rentals) != 0:
             return self.rentals[-1].rID + 1

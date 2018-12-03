@@ -19,6 +19,7 @@ class UI:
         print("11.Exit")
 
     def menu(self):
+        now = datetime.datetime.now()
         while True:
             self.printMenu()
             userInput = input("Enter a command: ")
@@ -147,7 +148,8 @@ class UI:
                     print("There is no such movie!")
                 else:
                     try:
-                        self._controller.rentMovie(mID, cID)
+                        end = datetime.datetime.now() + datetime.timedelta(days=14)
+                        self._controller.rentMovie(mID, cID, now, end)
                     except ControllerException or RepositoryException as ce:
                         print(ce)
             elif userInput == "6":
@@ -161,7 +163,7 @@ class UI:
                     print("There is no such movie!")
                 else:
                     try:
-                        self._controller.returnMovie(mID)
+                        self._controller.returnMovie(mID, now)
                     except ControllerException as ce:
                         print(ce)
             elif userInput == "7":
@@ -259,6 +261,16 @@ class UI:
                         r += str(i)
                     print(r)
             elif userInput == "9":
+                try:
+                    self._controller.undoOp()
+                except ControllerException as c:
+                    print(c)
+            elif userInput == "10":
+                try:
+                    self._controller.redoOp()
+                except ControllerException as c:
+                    print(c)
+            elif userInput == "11":
                 return False
             else:
                 print("Invalid input")

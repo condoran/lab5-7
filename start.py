@@ -2,6 +2,7 @@ from operations.controller import *
 from domain.stuff import *
 from repository.moviesRepo import *
 from repository.rentalRepo import *
+from operations.undoController import *
 from UI.UI import *
 from tests.tests import *
 
@@ -21,6 +22,7 @@ now = datetime.datetime.today().strftime('%d-%m-%Y')
 end = datetime.datetime.strptime(now, '%d-%m-%Y') - datetime.timedelta(days=14)
 end1 = datetime.datetime.strptime(now, '%d-%m-%Y') - datetime.timedelta(days=1)
 repoR.addRent(Rental(1, 21, 11, end, end1, 0))
-controller = Controller(repo, repoC, repoR)
+undo = UndoController()
+controller = Controller(repo, repoC, repoR, undo)
 ui = UI(controller)
 ui.menu()
