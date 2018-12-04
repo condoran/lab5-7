@@ -95,4 +95,4 @@ class Rental:
         self.returnedDate = date
 
     def __str__(self):
-        return str(self.rentalID) + ". " + str(self.movieID) + "; " + str(self.clientID)+ "; " + str(self.rentedDate) + "; " + str(self.dueDate) + "; " + str(self.rentedDate) + '\n'
+        return str(self.rentalID) + ". " + str(self.movieID) + "; " + str(self.clientID)+ "; " + str(self.rentedDate) + "; " + str(self.dueDate) + "; " + str(self.returnedD) + '\n'

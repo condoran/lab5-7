@@ -16,11 +16,11 @@ class UndoController:
         self._duringUndo = True
         self._operations[self._index].undo()
         self._duringUndo = False
-        self._index -= -1
+        self._index -= 1
         return True
 
     def redo(self):
-        if self._index >= len(self._operations):
+        if self._index >= len(self._operations) - 1:
             return False
         self._index += 1
         self._duringUndo = True
@@ -35,9 +35,6 @@ class FunctionCall:
 
     def call(self):
         self._fc(*self._params)
-
-    def __str__(self):
-        str(self._fc) + str(self._params[0]) + str(self._params[1]) + str(self._params[2]) + str(self._params[3])
 
 class CascadeOp:
     def __init__(self):

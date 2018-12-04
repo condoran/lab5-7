@@ -24,7 +24,7 @@ class rentalRepository:
 
     def deleteRent(self, ID):
         for i in range(0, len(self.rentals)):
-            if self.rentals[i].ID == ID:
+            if self.rentals[i].rID == ID:
                 del self.rentals[i]
                 break
 
@@ -49,3 +49,8 @@ class rentalRepository:
 
     def getAll(self):
         return self.rentals
+
+    def unRentMovie(self, mID):
+        for i in self.rentals:
+            if i.mID == mID:
+                i.setReturned(0)

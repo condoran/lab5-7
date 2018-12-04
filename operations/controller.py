@@ -22,7 +22,6 @@ class Controller:
         self.movieRepo.add(Movie(ID, title, desc, genre))
         undo = FunctionCall(self.deleteMovie, ID)
         redo = FunctionCall(self.addMovie, ID, title, desc, genre)
-        print(str(redo))
         op = Operation(undo, redo)
         self.undoController.add(op)
 
@@ -38,18 +37,19 @@ class Controller:
         while i < len(self.rentalRepo.rentals):
             if self.rentalRepo.rentals[i].mID == ID:
                 copy = deepcopy(self.rentalRepo.rentals[i])
+                print(str(copy))
                 undo = FunctionCall(self.rentalRepo.addRent, copy)
-                redo = FunctionCall(self.rentalRepo.deleteRent, self.rentalRepo.rentals[i].ID)
+                redo = FunctionCall(self.rentalRepo.deleteRent, self.rentalRepo.rentals[i].rID)
                 cascade = CascadeOp()
                 oper = Operation(undo, redo)
                 cascade.add(oper)
-                self.rentalRepo.deleteRent(self.rentalRepo.rentals[i].ID)
+                self.rentalRepo.deleteRent(self.rentalRepo.rentals[i].rID)
             else:
                 i += 1
         movies = self.movieRepo.getAll()
         for i in range(0, len(movies)):
             if movies[i].ID == ID:
-                undo = FunctionCall(self.addMovie, movies[i])
+                undo = FunctionCall(self.addMovie, movies[i].ID, movies[i].title, movies[i].desc, movies[i].genre)
                 redo = FunctionCall(self.deleteMovie, ID)
                 cascade = CascadeOp()
                 oper = Operation(undo, redo)
@@ -64,15 +64,15 @@ class Controller:
             if self.rentalRepo.rentals[i].cID == ID:
                 copy = deepcopy(self.rentalRepo.rentals[i])
                 undo = FunctionCall(self.rentalRepo.addRent, copy)
-                redo = FunctionCall(self.rentalRepo.deleteRent, self.rentalRepo.rentals[i].ID)
+                redo = FunctionCall(self.rentalRepo.deleteRent, self.rentalRepo.rentals[i].rID)
                 cascade = CascadeOp()
                 oper = Operation(undo, redo)
                 cascade.add(oper)
-                self.rentalRepo.deleteRent(self.rentalRepo.rentals[i].ID)
+                self.rentalRepo.deleteRent(self.rentalRepo.rentals[i].rID)
         clients = self.clientRepo.getAll()
         for i in range(0, len(clients)):
             if clients[i].ID == ID:
-                undo = FunctionCall(self.addClient, clients[i])
+                undo = FunctionCall(self.addClient, clients[i].ID, clients[i].name)
                 redo = FunctionCall(self.deleteClient, ID)
                 cascade = CascadeOp()
                 oper = Operation(undo, redo)
@@ -141,7 +141,7 @@ class Controller:
             raise ControllerException("The movie was not rented!")
         else:
             self.rentalRepo.returnMovie(mID, now)
-            undo = FunctionCall(self.rentalRepo.returnMovie, mID, 0)
+            undo = FunctionCall(self.rentalRepo.unRentMovie, mID)
             redo = FunctionCall(self.rentalRepo.returnMovie, mID, now)
             op = Operation(undo, redo)
             self.undoController.add(op)
@@ -274,17 +274,11 @@ class Controller:
         return kM
 
     def undoOp(self):
-        try:
-            ceva = self.undoController.undo()
-        except IndexError:
-            raise ControllerException("There are no more undos!")
+        ceva = self.undoController.undo()
         if ceva == False:
             raise ControllerException("There are no more undos!")
 
     def redoOp(self):
-        try:
-            ceva = self.undoController.redo()
-        except IndexError:
-            raise ControllerException("There are no more redos!")
+        ceva = self.undoController.redo()
         if ceva == False:
             raise ControllerException("There are no more redos!")
