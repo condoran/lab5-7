@@ -77,7 +77,7 @@ class UI:
                     except ValueError:
                         print("Invalid ID!")
                     if self._controller.testClientID(ID):
-                        self._controller.deleteClient(Client(ID, name))
+                        self._controller.deleteClient(ID)
                     else:
                         print("There is no client with this ID!")
                 else:

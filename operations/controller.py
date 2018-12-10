@@ -37,7 +37,6 @@ class Controller:
         while i < len(self.rentalRepo.rentals):
             if self.rentalRepo.rentals[i].mID == ID:
                 copy = deepcopy(self.rentalRepo.rentals[i])
-                print(str(copy))
                 undo = FunctionCall(self.rentalRepo.addRent, copy)
                 redo = FunctionCall(self.rentalRepo.deleteRent, self.rentalRepo.rentals[i].rID)
                 cascade = CascadeOp()
@@ -60,21 +59,22 @@ class Controller:
 
     def deleteClient(self, ID):
         i = 0
+        cascade = CascadeOp()
         while i < len(self.rentalRepo.rentals):
             if self.rentalRepo.rentals[i].cID == ID:
                 copy = deepcopy(self.rentalRepo.rentals[i])
                 undo = FunctionCall(self.rentalRepo.addRent, copy)
                 redo = FunctionCall(self.rentalRepo.deleteRent, self.rentalRepo.rentals[i].rID)
-                cascade = CascadeOp()
                 oper = Operation(undo, redo)
                 cascade.add(oper)
                 self.rentalRepo.deleteRent(self.rentalRepo.rentals[i].rID)
+            else:
+                i += 1
         clients = self.clientRepo.getAll()
         for i in range(0, len(clients)):
             if clients[i].ID == ID:
                 undo = FunctionCall(self.addClient, clients[i].ID, clients[i].name)
                 redo = FunctionCall(self.deleteClient, ID)
-                cascade = CascadeOp()
                 oper = Operation(undo, redo)
                 cascade.add(oper)
                 self.undoController.add(cascade)
