@@ -1,11 +1,12 @@
 from domain.stuff import *
 from repository.repoException import *
+from assig9.assig9 import *
 
 
 class moviesRepository:
 
     def __init__(self):
-        self.movies = []
+        self.movies = Iterable()
 
     def add(self, movie):
         self.movies.append(movie)

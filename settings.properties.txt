@@ -1,4 +1,4 @@
 repository = inmemory
-movies = “”
-clients = “”
-rentals = “”
+movies = movies.txt
+clients = clients.txt
+rentals = rentals.txt 
