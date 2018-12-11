@@ -33,11 +33,12 @@ class moviesRepository:
     def update(self, movie, movieN):
         self.movies[self.find(movie)] = movieN
 
+    def getAll(self):
+        return self.movies
+
     def __str__(self):
         r = ""
         for i in self.movies:
             r += str(i)
         return r
 
-    def getAll(self):
-        return self.movies

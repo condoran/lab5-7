@@ -11,6 +11,7 @@ class Movie:
 
     @property
     def title(self):
+
         return self.movieTitle
 
     @property
@@ -34,7 +35,7 @@ class Movie:
         self.movieGenre = genre
 
     def __str__(self):
-        return str(self.movieID) + ". " + self.title + "; " + self.desc + "; " + self.genre + '\n'
+        return str(self.movieID) + ". " + self.title + "; " + self.desc + "; " + self.genre
 
 class Client:
     def __init__(self, clientID, name):

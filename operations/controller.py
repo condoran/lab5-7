@@ -4,6 +4,7 @@ from repository.moviesRepo import *
 from domain.stuff import *
 from operations.controlException import *
 from operations.undoController import *
+import pickle
 
 class Controller:
     def __init__(self, movies, clients, rentals, undo):
@@ -11,6 +12,33 @@ class Controller:
         self.clientRepo = clients
         self.rentalRepo = rentals
         self.undoController = undo
+        self.fileType = 0
+        self.clientsF = None
+        self.moviesF = None
+        self.rentalsF = None
+
+    def firstRead(self):
+        settings = {}
+        f = open("settings.properties.txt", "r")
+        all = f.read().split("\n")
+        for a in all:
+            one = a.split("=")
+            settings[one[0].strip()] = one[1].strip()
+        f.close()
+        if settings["repository"] == "binaryfiles":
+            self.fileType = 2
+            self.clientsF = settings["clients"]
+            self.moviesF = settings["movies"]
+            self.rentalsF = settings["rentals"]
+            self.readBinary()
+        else:
+            self.fileType = 1
+            self.readText()
+            self.clientsF = "Clients.txt"
+            self.moviesF = "Movies.txt"
+            self.rentalsF = "Rentals.txt"
+
+
 
     def testMovieID(self, ID):
         return self.movieRepo.findID(ID)
@@ -24,6 +52,7 @@ class Controller:
         redo = FunctionCall(self.addMovie, ID, title, desc, genre)
         op = Operation(undo, redo)
         self.undoController.add(op)
+        self.writeMovies()
 
     def addClient(self, ID, name):
         self.clientRepo.add(Client(ID, name))
@@ -31,6 +60,8 @@ class Controller:
         redo = FunctionCall(self.addClient, ID, name)
         oper = Operation(undo, redo)
         self.undoController.add(oper)
+        self.writeClients()
+
 
     def deleteMovie(self, ID):
         i = 0
@@ -55,6 +86,7 @@ class Controller:
                 cascade.add(oper)
                 self.undoController.add(cascade)
                 del movies[i]
+                self.writeMovies()
                 break
 
     def deleteClient(self, ID):
@@ -79,6 +111,7 @@ class Controller:
                 cascade.add(oper)
                 self.undoController.add(cascade)
                 del clients[i]
+                self.writeClients()
                 break
 
     def updateMovie(self, movie, ID):
@@ -94,6 +127,7 @@ class Controller:
                 movies[i].setTitle(movie.title)
                 movies[i].setDesc(movie.desc)
                 movies[i].setGenre(movie.genre)
+                self.writeMovies()
 
     def updateClient(self, client, ID):
         clients = self.clientRepo.getAll()
@@ -106,6 +140,7 @@ class Controller:
                 self.undoController.add(oper)
                 clients[i].setID(client.ID)
                 clients[i].setName(client.name)
+                self.writeClients()
 
     def printM(self):
         return str(self.movieRepo)
@@ -135,6 +170,7 @@ class Controller:
                 redo = FunctionCall(self.rentMovie, mID, cID, now, end)
                 op = Operation(undo, redo)
                 self.undoController.add(op)
+            self.writeRentals()
 
     def returnMovie(self, mID, now):
         if self.rentalRepo.findMID(mID) == False:
@@ -145,6 +181,7 @@ class Controller:
             redo = FunctionCall(self.rentalRepo.returnMovie, mID, now)
             op = Operation(undo, redo)
             self.undoController.add(op)
+            self.writeRentals()
 
     def findInMoviesID(self, ID):
         try:
@@ -282,3 +319,74 @@ class Controller:
         ceva = self.undoController.redo()
         if ceva == False:
             raise ControllerException("There are no more redos!")
+
+    def writeMovies(self):
+        f = open(self.moviesF, "w")
+        for movie in self.movieRepo.getAll():
+            f.write(str(movie.ID) + "," +str(movie.title) + "," + str(movie.desc) + "," + str(movie.genre) + '\n')
+        f.close()
+
+    def writeClients(self):
+        f = open(self.clientsF, "w")
+        for client in self.clientRepo.getAll():
+            f.write(str(client.ID) + "," + str(client.name) + '\n')
+        f.close()
+
+    def writeRentals(self):
+        f = open(self.rentalsF, "w")
+        for rental in self.rentalRepo.getAll():
+            f.write(str(rental.rID) + "," + str(rental.mID) + "," + str(rental.cID) + "," + str(rental.rentedD) + "," + str(rental.dueD) + "," + str(rental.returnedD) + '\n')
+        f.close()
+
+    def readText(self):
+        f = open("Clients.txt", "r")
+        l = f.readline()
+        while len(l) > 1:
+            cl = l.split(",")
+            self.clientRepo.add(Client(int(cl[0]), str(cl[1])))
+            l = f.readline()
+        f.close()
+        f = open("Movies.txt", "r")
+        l = f.readline()
+        while len(l) > 1:
+            mv = l.split(",")
+            self.movieRepo.add(Movie(int(mv[0]), str(mv[1]), str(mv[2]), str(mv[3])))
+            l = f.readline()
+            l = f.readline()
+        f.close()
+        f = open("Rentals.txt", "r")
+        l = f.readline()
+        while len(l) > 1:
+            re = l.split(",")
+            self.rentalRepo.addRent(Rental(int(re[0]), int(re[1]), int(re[2]), str(re[3]), str(re[4]), str(re[5])))
+            l = f.readline()
+        f.close()
+
+    def readBinary(self, file):
+        try:
+            f = open(str(self.clientsF), "rb")
+            clients = pickle.load(f)
+            g = open(str(self.moviesF), "rb")
+            movies = pickle.load(g)
+            h = open(str(self.rentalsF), "rb")
+            rentals = pickle.load(h)
+
+        except IOError as e:
+            print(str(e))
+            raise e
+        except EOFError:
+            return []
+
+        self.movieRepo = movies
+        self.clientRepo = clients
+        self.rentalRepo = rentals
+        f.close()
+        g.close()
+        h.close()
+
+    def saveBinary(self):
+        f = open("binary.pickle", "rb")
+        pickle.dump(self.movieRepo, f)
+        pickle.dump(self.clientRepo, f)
+        pickle.dump(self.rentalRepo, f)
+        f.close()
